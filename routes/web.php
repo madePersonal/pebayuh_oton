@@ -27,7 +27,9 @@ Route::post('/login', [AuthController::class, 'handle_login'])->name('login.post
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin
-Route::get('/test', [AdminController::class, 'test'])->name('test');
+// Route::get('/test', [AdminController::class, 'test'])->name('test');
 Route::get('/admin/pancawara', [AdminController::class, 'pancawara'])->middleware('auth', 'roleAdmin');
 Route::get('/admin/data_pancawara', [AdminController::class, 'get_data_upakara_pancawara'])->middleware('auth', 'roleAdmin');
+Route::post('/admin/update_upkara', [AdminController::class, 'update_upkara'])->middleware('auth', 'roleAdmin');
+Route::post('/admin/add_upkara', [AdminController::class, 'add_upkara'])->middleware('auth', 'roleAdmin');
 Route::get('/admin/data_pancawara/{id}', [AdminController::class, 'get_data_upakara_pancawara_by_id'])->middleware('auth', 'roleAdmin');
