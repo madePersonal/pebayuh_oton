@@ -7,6 +7,7 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Models\User;
 use App\Models\TaUpakara;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Response;
 
 class AdminController extends Controller
@@ -65,26 +66,30 @@ class AdminController extends Controller
      }
 
      public function add_upkara(Request $request){
-          // $upakara = TaUpakara::create([
-          //      'hari_id' => $request->input('hari'),
-          //      'pebayuh' => $request->input('pebayauh'),
-          //      'sedahan_ngurah' => $request->input('sedahan_ngurah'),
-          //      'genah' => $request->input('genah'),
-          //      'ket' => $request->input('ket'),
-          //      'created_by' => $request->session()->get('username'),
-          // ]);
-
-          $upakara = new TaUpakara;
- 
-          $upakara->hari_id = $request->input('hari');
-          $upakara->pebayuh = $request->input('pebayuh');
-          $upakara->sedahan_ngurah = $request->input('sedahan_ngurah');
-          $upakara->genah = $request->input('genah');
-          $upakara->ket = $request->input('ket');
-          $upakara->created_by = $request->session()->get('username');
-
-          $upakara->save();
-          if($upakara->wasChanged()){
+          $rules =[
+               'hari' => 'required',
+               'pebayuh' => 'required',
+               'sedahan_ngurah' => 'required',
+               'genah' => 'required',
+          ];
+          $messages = [
+               'hari.required' => 'Hari tidak boleh kosong',
+               'pebayuh.required' => 'Pebayuh tidak boleh kosong',
+               'sedahan_ngurah.required' => 'sedahan ngurah tidak boleh kosong',
+               'genah.required' => 'genah tidak boleh kosong',
+          ];
+          $validator = Validator::make($request->all(), $rules, $messages);
+          if ($validator->fails()) {
+               return response()->json(['status'=>false, 'message'=>$validator->errors()]);
+          }else{
+               $upakara = new TaUpakara;
+               $upakara->hari_id = $request->input('hari');
+               $upakara->pebayuh = $request->input('pebayuh');
+               $upakara->sedahan_ngurah = $request->input('sedahan_ngurah');
+               $upakara->genah = $request->input('genah');
+               $upakara->ket = $request->input('ket');
+               $upakara->created_by = $request->session()->get('username');
+               $upakara->save();
                return response()->json(['status'=>true, 'message'=>"data berhasil disimpan"]);
           }
      }
